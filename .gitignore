@@ -1,0 +1,24 @@
+# Archivos generados automáticamente
+*.pyc
+*.pyo
+
+# Archivos de registro y salida
+logs/
+*.log
+*.pot
+
+# Archivos de configuración locales
+.env
+env/
+venv/
+*.sqlite3
+
+# Archivos de caché
+__pycache__/
+dist/
+build/
+*.egg-info/
+
+# Otros
+.DS_Store
+*.pyc

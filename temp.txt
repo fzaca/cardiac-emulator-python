@@ -1,0 +1,28 @@
+cardiac_emulator/
+    ├── src/
+    │   ├── __init__.py
+    │   ├── cardiac.py
+    │   └── gui.py
+    ├── tests/
+    │   ├── __init__.py
+    │   ├── test_cardiac.py
+    │   └── test_gui.py
+    ├── docs/
+    ├── README.md
+    ├── LICENSE
+    └── requirements.txt
+
+-----------------------------------
+
+src/: Esta carpeta contendrá el código fuente de tu proyecto. Aquí es donde escribirás el emulador CARDIAC y la interfaz de usuario con dear pygui.
+__init__.py: Este archivo es necesario para que Python trate la carpeta src como un paquete.
+cardiac.py: Este archivo contendrá el código del emulador CARDIAC. Aquí es donde se implementarán las funciones para emular el hardware y ejecutar el código CARDIAC.
+gui.py: Este archivo contendrá el código para la interfaz de usuario con dear pygui. Aquí es donde se definirán los controles de la interfaz de usuario y se escribirá el código de controlador para manejar la entrada del usuario y actualizar la salida en la pantalla.
+tests/: Esta carpeta contendrá tus pruebas automatizadas. Aquí es donde escribirás pruebas para asegurarte de que tu código esté funcionando correctamente.
+__init__.py: Este archivo es necesario para que Python trate la carpeta tests como un paquete.
+test_cardiac.py: Este archivo contendrá las pruebas para el emulador CARDIAC.
+test_gui.py: Este archivo contendrá las pruebas para la interfaz de usuario con dear pygui.
+docs/: Esta carpeta contendrá la documentación de tu proyecto. Aquí es donde escribirás la documentación del proyecto, como la descripción del proyecto, las instrucciones de instalación y uso, y la documentación del código.
+README.md: Este archivo contendrá la descripción del proyecto y las instrucciones de instalación y uso.
+LICENSE: Este archivo contendrá la licencia del proyecto.
+requirements.txt: Este archivo contendrá una lista de paquetes de Python requeridos por tu proyecto y sus versiones.
