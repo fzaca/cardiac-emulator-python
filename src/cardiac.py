@@ -7,6 +7,7 @@ class Cardiac:
     def __init__(self) -> None:
         self.memory = [0] * 100
         self.memory[0] = 1
+        self.memory[99] = '8__'
         self.accumulator = 0
         self.flag = None
         self.target = 0
