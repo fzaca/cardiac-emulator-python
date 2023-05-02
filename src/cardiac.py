@@ -7,12 +7,13 @@ class Cardiac:
     def __init__(self) -> None:
         self.memory = [0] * 100
         self.memory[0] = 1
-        self.memory[99] = '8__'
+        self.memory[99] = 800
         self.accumulator = 0
         self.flag = None
         self.target = 0
         self.input_card = Queue()
         self.output_card = []
+        self.step = 0
 
         self.run = True
 
@@ -37,6 +38,7 @@ class Cardiac:
 
         instruction = self.memory[self.target]
         self.target += 1
+        self.step += 1
         opcode = instruction // 100
         address = instruction % 100
 
@@ -48,6 +50,7 @@ class Cardiac:
 
             case 1:
                 self.accumulator = self.read_memory(address)
+                print(f'result: {self.read_memory(address)}')
 
             case 2:
                 self.accumulator += self.read_memory(address)
@@ -109,6 +112,16 @@ class Cardiac:
             self.flag = False
         else:
             self.flag = True
+
+    def __str__(self):
+        text = ''
+        text += f'Step: {self.step}\n'
+        text += f'Target: {self.target}\n'
+        text += f'Flag: {self.flag}\n'
+        text += f'Accumulator: {self.accumulator}\n'
+        text += f'Input card-deck: {list(self.input_card.queue)}\n'
+        text += f'Output card-deck: {self.output_card}\n'
+        return text
 
 if __name__ == '__main__':
     cardiac = Cardiac()
