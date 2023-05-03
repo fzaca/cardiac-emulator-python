@@ -225,6 +225,7 @@ class CardiacApp(UserControl):
         self.target_textbox.update()
         # Accumulator
         self.accumulator_text.value = f'Accumulator: {self.cardiac.accumulator}'
+        self.accumulator_text.update()
         # Memory
         self.update_memory()
 
