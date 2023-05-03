@@ -15,7 +15,6 @@ from flet import (
     MainAxisAlignment,
     CrossAxisAlignment,
     ElevatedButton,
-    GridView,
     border,
     colors,
 )
@@ -29,6 +28,17 @@ class CardiacApp(UserControl):
         super().__init__()
         self.page = page
         self.cardiac = Cardiac()
+
+
+        program = { # Multiplica un numero por 10
+            15:14,
+            16:114,
+            17:410,
+            18:614,
+            19:514,
+            20:900
+        }
+        self.cardiac.load_program(program)
 
         self.cardiac.input_card.put(5)
         
@@ -70,13 +80,14 @@ class CardiacApp(UserControl):
         )
 
         def generate_memory():
+            ''' This function generates the memory grids returning a list of textboxs'''
             rows = []
             self.cells = []
             
             for i in range(10):
                 columns = []
                 for j in range(10):
-                    t = TextField(width=45, height=24, text_size=12, content_padding=9, dense=True, on_change=self.update_memory)
+                    t = TextField(width=45, height=24, text_size=12, content_padding=9, dense=True)
                     self.cells.append(t)
                     cell = Row([
                         Text(f'{i*10+j}'),
@@ -85,6 +96,7 @@ class CardiacApp(UserControl):
                     columns.append(cell)
                 row = Column(columns, spacing=1)
                 rows.append(row)
+
             return rows
 
         self.memory_row = Row(generate_memory())
@@ -152,7 +164,7 @@ class CardiacApp(UserControl):
         )
 
         #     items
-        self.run_button = ElevatedButton('Run')
+        self.run_button = ElevatedButton('Run', on_click=self.run_clicked)
         self.step_button = ElevatedButton('Step', on_click=self.step_clicked)
         self.reset_button = ElevatedButton('Reset', on_click=self.reset_clicked)
 
@@ -201,7 +213,6 @@ class CardiacApp(UserControl):
         )
 
     def update_all(self):
-        print(self.cardiac)
         # Flag text
         value = '+' if self.cardiac.flag else '-'
         self.flag_text.value = f'Flag: {value}'
@@ -215,36 +226,30 @@ class CardiacApp(UserControl):
         # Accumulator
         self.accumulator_text.value = f'Accumulator: {self.cardiac.accumulator}'
         # Memory
-        self.update_memory(None)
+        self.update_memory()
 
-    def update_memory(self, e):
-        print(self.cardiac.memory)
+    def update_memory(self):
         for i, cell in enumerate(self.cells):
+            # Update cell target
             if i == self.cardiac.target:
-                cell.border_color = 'red'
-                cell.bgcolor = 'red'
+                cell.bgcolor = 'blue'
             else:
-                cell.border_color = 'gray'
-                cell.bgcolor = False
+                cell.bgcolor = 'none'
 
-            try:
-                if int(cell.value) > 0:
+            # Update cell value
+            if self.cardiac.memory[i]:
+                cell.value = str(self.cardiac.memory[i]).zfill(3)
+
+            if cell.value:
+                if self.cardiac.memory[i] != int(cell.value):
                     self.cardiac.memory[i] = int(cell.value)
-            except:
-                self.cardiac.memory[i] = 0
-                            
+
             cell.update()
 
-
-    def upload_memory(self):
-        for i, cell in enumerate(self.cells):
-            if self.cardiac.memory[i] > 0:
-                cell.value = str(self.cardiac.memory[i]).zfill(3)
-                cell.update()
-
     def step_clicked(self, e):
-        self.update_memory(None)
+        self.update_memory() # Fix
         self.cardiac.step_program()
+        print(self.cardiac)
         self.update_all()
 
     def run_clicked(self, e):
@@ -260,9 +265,9 @@ class CardiacApp(UserControl):
     def target_changed(self, e):
         try:
             self.cardiac.target = int(e.control.value)
+            self.update_all()
         except:
             return
-        self.update_all()
 
 def main(page: Page):
     page.title = "Cardiac"
@@ -272,8 +277,7 @@ def main(page: Page):
 
     app = CardiacApp(page)
     page.add(app)
-    app.upload_memory()
-    app.update_all()
+    app.update_memory()
 
     page.update()
 
