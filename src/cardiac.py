@@ -30,7 +30,10 @@ class Cardiac:
 
     def run_program(self):
         '''Ejecuta el programa cargado en la memoria del emulador.'''
-        pass
+        self.run = True
+        while self.run:
+            self.step_program()
+            print(self)
 
     def step_program(self):
         if not (0 <= self.target <= 99):
@@ -50,7 +53,6 @@ class Cardiac:
 
             case 1:
                 self.accumulator = self.read_memory(address)
-                print(f'result: {self.read_memory(address)}')
 
             case 2:
                 self.accumulator += self.read_memory(address)
@@ -92,6 +94,9 @@ class Cardiac:
             case 9:
                 self.target = address # Temporal
                 self.run = False
+
+    def reset_program(self):
+        pass
 
     def read_memory(self, address):
         '''Lee un valor de la memoria del emulador en una dirección dada.'''
@@ -143,6 +148,7 @@ if __name__ == '__main__':
 
     while cardiac.run:
         cardiac.step_program()
+        print(cardiac)
         # time.sleep(0.5)
 
     print(cardiac.output_card)
