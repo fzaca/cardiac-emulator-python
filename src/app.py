@@ -17,6 +17,7 @@ from flet import (
     ElevatedButton,
     border,
     colors,
+    ListView
 )
 
 # Constants
@@ -68,7 +69,7 @@ class CardiacApp(UserControl):
 
         # Right and left containers display
         self.left_col = Column(spacing=10)
-        self.right_col = Column(spacing=0)
+        self.right_row = Row(spacing=0)
 
         # Memory Container
         self.memory_container = Container(
@@ -96,6 +97,9 @@ class CardiacApp(UserControl):
                     columns.append(cell)
                 row = Column(columns, spacing=1)
                 rows.append(row)
+
+            self.cells[0].disabled = True
+            self.cells[99].disabled = True
 
             return rows
 
@@ -180,21 +184,59 @@ class CardiacApp(UserControl):
 
         self.controls_container.content = self.controls_row
 
+        # Input and output Containers
+        self.input_container = Container(
+            bgcolor='red',
+            height=self.right_container.height, 
+            expand=1,
+        )
+        self.output_container = Container(
+            expand=1,
+            padding=10,        
+        )
+
+        #    Elements output col
+        self.output_lv = ListView(
+            expand=1, spacing=10, item_extent=50, padding=10, auto_scroll=True
+        )
+        self.output_lv_bg = Container(
+            expand=True,
+            bgcolor='blue',
+            content=self.output_lv,
+            border_radius=20,
+        )
+        self.clear_output_button = ElevatedButton(
+            'Clear', width=100, on_click=self.clear_output_clicked
+        )
+
+        #    Input and output cols
+        self.input_col = Column([Text('Hola mundo')])
+        self.output_col = Column([self.output_lv_bg, self.clear_output_button])
+
+        self.input_container.content = self.input_col
+        self.output_container.content = self.output_col
+
         #
         self.interface_col.controls.append(self.status_container) # or use extend
         self.interface_col.controls.append(self.medium_container)
         self.interface_col.controls.append(self.controls_container)
         
         self.interface_container.content = self.interface_col
-                
+
+        #
+        self.memory_container.content = self.memory_row
+
+        #
+        self.right_row.controls.append(self.input_container)
+        self.right_row.controls.append(self.output_container)
+
+        self.right_container.content = self.right_row
+
         #
         self.left_col.controls.append(self.memory_container) # or use extend
         self.left_col.controls.append(self.interface_container) 
 
         self.left_container.content = self.left_col
-
-        #
-        self.memory_container.content = self.memory_row
          
         #
         self.main_row.controls.append(self.left_container) # or use extend
@@ -228,6 +270,11 @@ class CardiacApp(UserControl):
         self.accumulator_text.update()
         # Memory
         self.update_memory()
+        # Output card-deck
+        self.output_lv.controls = []
+        for s in self.cardiac.output_card:
+            self.output_lv.controls.append(Text(s))
+        self.output_lv.update()
 
     def update_memory(self):
         for i, cell in enumerate(self.cells):
@@ -269,6 +316,10 @@ class CardiacApp(UserControl):
             self.update_all()
         except:
             return
+
+    def clear_output_clicked(self, e):
+        self.cardiac.output_card = []
+        self.update_all()
 
 def main(page: Page):
     page.title = "Cardiac"
