@@ -17,7 +17,8 @@ from flet import (
     ElevatedButton,
     border,
     colors,
-    ListView
+    ListView,
+    padding,
 )
 
 # Constants
@@ -30,19 +31,6 @@ class CardiacApp(UserControl):
         self.page = page
         self.cardiac = Cardiac()
 
-
-        program = { # Multiplica un numero por 10
-            15:14,
-            16:114,
-            17:410,
-            18:614,
-            19:514,
-            20:900
-        }
-        self.cardiac.load_program(program)
-
-        self.cardiac.input_card.put(5)
-        
     # Main container
     def main_container(self):
         self.main = Container(
@@ -88,7 +76,11 @@ class CardiacApp(UserControl):
             for i in range(10):
                 columns = []
                 for j in range(10):
-                    t = TextField(width=45, height=24, text_size=12, content_padding=9, dense=True)
+                    t = TextField(
+                        width=45, height=24, 
+                        text_size=12, 
+                        content_padding=padding.symmetric(4, 10),
+                        dense=True)
                     self.cells.append(t)
                     cell = Row([
                         Text(f'{i*10+j}'),
@@ -186,13 +178,32 @@ class CardiacApp(UserControl):
 
         # Input and output Containers
         self.input_container = Container(
-            bgcolor='red',
-            height=self.right_container.height, 
             expand=1,
+            padding=10,
         )
         self.output_container = Container(
             expand=1,
             padding=10,        
+        )
+
+        #    Elements input col
+        self.input_lv = ListView(
+            expand=1, spacing=10, item_extent=50, padding=10, auto_scroll=True
+        )
+        self.input_lv_bg = Container(
+            expand=True,
+            bgcolor='blue',
+            content=self.input_lv,
+            border_radius=20,
+        )
+        self.add_input_textbox = TextField(
+            height=40,
+            border_radius=20,
+            content_padding=padding.symmetric(1, 10),
+            hint_text='Number',            
+        )
+        self.add_input_button = ElevatedButton(
+            'Add', width=100, on_click=self.add_input_clicked
         )
 
         #    Elements output col
@@ -210,7 +221,9 @@ class CardiacApp(UserControl):
         )
 
         #    Input and output cols
-        self.input_col = Column([Text('Hola mundo')])
+        self.input_col = Column([
+            self.input_lv_bg, self.add_input_textbox, self.add_input_button
+        ])
         self.output_col = Column([self.output_lv_bg, self.clear_output_button])
 
         self.input_container.content = self.input_col
@@ -272,9 +285,14 @@ class CardiacApp(UserControl):
         self.update_memory()
         # Output card-deck
         self.output_lv.controls = []
-        for s in self.cardiac.output_card:
-            self.output_lv.controls.append(Text(s))
+        for num in self.cardiac.output_card:
+            self.output_lv.controls.append(Text(str(num).zfill(3)))
         self.output_lv.update()
+        # Input card-deck
+        self.input_lv.controls = []
+        for num in self.cardiac.input_card:
+            self.input_lv.controls.append(Text(str(num).zfill(3)))
+        self.input_lv.update()
 
     def update_memory(self):
         for i, cell in enumerate(self.cells):
@@ -321,6 +339,20 @@ class CardiacApp(UserControl):
         self.cardiac.output_card = []
         self.update_all()
 
+    def add_input_clicked(self, e):
+        value = self.add_input_textbox.value
+    
+        if 0 < len(value) <= 3:
+            try:
+                value = int(value)
+                self.cardiac.input_card.append(value)
+            except:
+                pass
+        self.add_input_textbox.value = None
+
+        self.add_input_textbox.update()
+        self.update_all()
+                
 def main(page: Page):
     page.title = "Cardiac"
     page.window_width = SCREEN_WIDTH
