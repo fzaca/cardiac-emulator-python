@@ -68,6 +68,20 @@ class CardiacApp(UserControl):
             border=border.all(1, colors.GREY_600)
         )
 
+        def create_cell(row, col):
+            ''' Create a single cell of memory '''
+            index = row * 10 + col
+            label = Text(f'{index}', size=12)
+            text_field = TextField(
+                width=45, height=24,
+                text_size=12,
+                content_padding=padding.symmetric(4, 10),
+                dense=True,
+                on_change=lambda e, idx=index: self.cell_changed(idx, e)
+            )
+            cell = Row([label, text_field], spacing=0)
+            return cell, text_field
+
         def generate_memory():
             ''' This function generates the memory grids returning a list of textboxs'''
             rows = []
@@ -76,19 +90,8 @@ class CardiacApp(UserControl):
             for i in range(10):
                 columns = []
                 for j in range(10):
-                    index = i*10+j
-                    t = TextField(
-                        width=45, height=24, 
-                        text_size=12, 
-                        content_padding=padding.symmetric(4, 10),
-                        dense=True,
-                        on_change=lambda e, idx=index: self.cell_changed(idx, e)
-                    )
-                    self.cells.append(t)
-                    cell = Row([
-                        Text(f'{i*10+j}'),
-                        t
-                    ], spacing=0)
+                    cell, textbox = create_cell(i, j)
+                    self.cells.append(textbox)
                     columns.append(cell)
                 row = Column(columns, spacing=1)
                 rows.append(row)
@@ -282,7 +285,10 @@ class CardiacApp(UserControl):
         self.target_textbox.value = self.cardiac.target
         self.target_textbox.update()
         # Accumulator
-        self.accumulator_text.value = f'Accumulator: {self.cardiac.accumulator}'
+        if self.cardiac.accumulator >= 0:
+            self.accumulator_text.value = f'Accumulator: {self.cardiac.accumulator}'
+        else:
+            self.accumulator_text.value = f'Accumulator: {-self.cardiac.accumulator}'
         self.accumulator_text.update()
         # Memory
         self.update_memory()
@@ -308,6 +314,8 @@ class CardiacApp(UserControl):
             # Update cell value
             if self.cardiac.memory[i]:
                 cell.value = str(self.cardiac.memory[i]).zfill(3)
+            else:
+                cell.value = ''
 
             cell.update()
 
@@ -321,7 +329,6 @@ class CardiacApp(UserControl):
     def step_clicked(self, e):
         self.update_memory() # Fix
         self.cardiac.step_program()
-        print(self.cardiac)
         self.update_all()
 
     def run_clicked(self, e):
@@ -329,9 +336,7 @@ class CardiacApp(UserControl):
         self.update_all()
 
     def reset_clicked(self, e):
-        self.cardiac.target = 0
-        self.cardiac.step = 0
-        self.cardiac.flag = True
+        self.cardiac.reset()
         self.update_all()
 
     def target_changed(self, e):
@@ -367,7 +372,7 @@ def main(page: Page):
 
     app = CardiacApp(page)
     page.add(app)
-    app.update_memory()
+    app.update_all()
 
     page.update()
 
