@@ -76,11 +76,14 @@ class CardiacApp(UserControl):
             for i in range(10):
                 columns = []
                 for j in range(10):
+                    index = i*10+j
                     t = TextField(
                         width=45, height=24, 
                         text_size=12, 
                         content_padding=padding.symmetric(4, 10),
-                        dense=True)
+                        dense=True,
+                        on_change=lambda e, idx=index: self.cell_changed(idx, e)
+                    )
                     self.cells.append(t)
                     cell = Row([
                         Text(f'{i*10+j}'),
@@ -306,11 +309,14 @@ class CardiacApp(UserControl):
             if self.cardiac.memory[i]:
                 cell.value = str(self.cardiac.memory[i]).zfill(3)
 
-            if cell.value:
-                if self.cardiac.memory[i] != int(cell.value):
-                    self.cardiac.memory[i] = int(cell.value)
-
             cell.update()
+
+    def cell_changed(self, index, event):
+        value = event.control.value
+        if value:
+            self.cardiac.memory[index] = int(value)
+        else:
+            self.cardiac.memory[index] = 0
 
     def step_clicked(self, e):
         self.update_memory() # Fix

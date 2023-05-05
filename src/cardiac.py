@@ -1,4 +1,3 @@
-from queue import Queue
 import time
 
 class Cardiac:
@@ -11,7 +10,7 @@ class Cardiac:
         self.accumulator = 0
         self.flag = None
         self.target = 0
-        self.input_card = Queue()
+        self.input_card = []
         self.output_card = []
         self.step = 0
 
@@ -48,7 +47,7 @@ class Cardiac:
         match opcode:
 
             case 0:
-                value = self.input_card.get() if not self.input_card.empty() else 0
+                value = self.input_card.pop() if self.input_card else 0
                 self.write_memory(address, value)
 
             case 1:
@@ -124,7 +123,7 @@ class Cardiac:
         text += f'Target: {self.target}\n'
         text += f'Flag: {self.flag}\n'
         text += f'Accumulator: {self.accumulator}\n'
-        text += f'Input card-deck: {list(self.input_card.queue)}\n'
+        text += f'Input card-deck: {self.input_card}\n'
         text += f'Output card-deck: {self.output_card}\n'
         return text
 
@@ -141,10 +140,7 @@ if __name__ == '__main__':
     cardiac.load_program(program)
     cardiac.target = 15
 
-    input_card = [5]
-
-    for num in input_card:
-        cardiac.input_card.put(num)
+    cardiac.input_card.append(5)
 
     while cardiac.run:
         cardiac.step_program()
