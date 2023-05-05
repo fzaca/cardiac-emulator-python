@@ -4,6 +4,8 @@
 
 This is a Python implementation of an emulator for the CARDIAC (Cardboard Illustrative Aid to Computation) computer, a teaching tool designed by David Hagelbarger in the late 1960s.
 
+- [Wikipedia page about CARDIAC](https://en.wikipedia.org/wiki/CARDboard_Illustrative_Aid_to_Computation)
+
 ## Requirements
 
 This project requires Python 3.7 or higher.
