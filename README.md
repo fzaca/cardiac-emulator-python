@@ -1,8 +1,8 @@
 # CARDIAC Emulator
 
-**descripcion**
-
 <p align="center"><img src='https://raw.githubusercontent.com/Xukay101/cardiac-emulator-python/master/demo.gif' /></p>
+
+This is a Python implementation of an emulator for the CARDIAC (Cardboard Illustrative Aid to Computation) computer, a teaching tool designed by David Hagelbarger in the late 1960s.
 
 ## Requisitos
 
