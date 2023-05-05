@@ -64,7 +64,10 @@ class Cardiac:
                 self.accumulator -= self.read_memory(address)
 
             case 8:
-                self.memory[99] = 800
+                if address != 99:
+                    self.memory[99] = int('8' + str(self.target-1).zfill(2))
+                if self.target-1 == 99:
+                    self.memory[99] = 800
                 self.target = address
 
             case 9:
