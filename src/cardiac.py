@@ -65,7 +65,7 @@ class Cardiac:
 
             case 8:
                 if address != 99:
-                    self.memory[99] = int('8' + str(self.target-1).zfill(2))
+                    self.memory[99] = int('8' + str(self.target).zfill(2))
                 if self.target-1 == 99:
                     self.memory[99] = 800
                 self.target = address
